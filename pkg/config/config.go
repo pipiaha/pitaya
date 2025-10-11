@@ -1,6 +1,7 @@
 package config
 
 import (
+	"crypto/tls"
 	"time"
 
 	"github.com/topfreegames/pitaya/v3/pkg/metrics/models"
@@ -311,7 +312,8 @@ type EtcdServiceDiscoveryConfig struct {
 	Shutdown struct {
 		Delay time.Duration `mapstructure:"delay"`
 	} `mapstructure:"shutdown"`
-	ServerTypesBlacklist []string `mapstructure:"servertypesblacklist"`
+	ServerTypesBlacklist []string    `mapstructure:"servertypesblacklist"`
+	TLS                  *tls.Config `mapstructure:"tls"`
 }
 
 // newDefaultEtcdServiceDiscoveryConfig Etcd service discovery default config
@@ -554,6 +556,7 @@ type EtcdGroupServiceConfig struct {
 	Endpoints          []string      `mapstructure:"endpoints"`
 	Prefix             string        `mapstructure:"prefix"`
 	TransactionTimeout time.Duration `mapstructure:"transactiontimeout"`
+	TLS                *tls.Config   `mapstructure:"tls"`
 }
 
 // newDefaultEtcdGroupServiceConfig provides default ETCD configuration
@@ -594,6 +597,7 @@ type ETCDBindingConfig struct {
 	Endpoints   []string      `mapstructure:"endpoints"`
 	Prefix      string        `mapstructure:"prefix"`
 	LeaseTTL    time.Duration `mapstructure:"leasettl"`
+	TLS         *tls.Config
 }
 
 // NewDefaultETCDBindingConfig provides default configuration for ETCDBindingStorage
