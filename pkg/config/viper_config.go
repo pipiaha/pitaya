@@ -100,6 +100,8 @@ func (c *Config) fillDefaultValues() {
 		"pitaya.cluster.sd.etcd.shutdown.delay":                 pitayaConfig.Cluster.SD.Etcd.Shutdown.Delay,
 		"pitaya.cluster.sd.etcd.servertypeblacklist":            pitayaConfig.Cluster.SD.Etcd.ServerTypesBlacklist,
 		"pitaya.cluster.sd.etcd.tls":                            pitayaConfig.Cluster.SD.Etcd.TLS,
+		"pitaya.cluser.sd.etcd.user":                            pitayaConfig.Cluster.SD.Etcd.User,
+		"pitaya.cluser.sd.etcd.pass":                            pitayaConfig.Cluster.SD.Etcd.Pass,
 		// the sum of this config among all the frontend servers should always be less than
 		// the sum of pitaya.buffer.cluster.rpc.server.nats.messages, for covering the worst case scenario
 		// a single backend server should have the config pitaya.buffer.cluster.rpc.server.nats.messages bigger
@@ -112,6 +114,8 @@ func (c *Config) fillDefaultValues() {
 		"pitaya.groups.etcd.prefix":                        pitayaConfig.Groups.Etcd.Prefix,
 		"pitaya.groups.etcd.transactiontimeout":            pitayaConfig.Groups.Etcd.TransactionTimeout,
 		"pitaya.groups.etcd.tls":                           pitayaConfig.Groups.Etcd.TLS,
+		"pitaya.groups.etcd.user":                          pitayaConfig.Groups.Etcd.User,
+		"pitaya.groups.etcd.pass":                          pitayaConfig.Groups.Etcd.Pass,
 		"pitaya.groups.memory.tickduration":                pitayaConfig.Groups.Memory.TickDuration,
 		"pitaya.handler.messages.compression":              pitayaConfig.Handler.Messages.Compression,
 		"pitaya.heartbeat.interval":                        pitayaConfig.Heartbeat.Interval,
@@ -130,6 +134,8 @@ func (c *Config) fillDefaultValues() {
 		"pitaya.modules.bindingstorage.etcd.leasettl":      pitayaConfig.Modules.BindingStorage.Etcd.LeaseTTL,
 		"pitaya.modules.bindingstorage.etcd.prefix":        pitayaConfig.Modules.BindingStorage.Etcd.Prefix,
 		"pitaya.modules.bindingstorage.etcd.tls":           pitayaConfig.Modules.BindingStorage.Etcd.TLS,
+		"pitaya.modules.bindingstorage.etcd.user":          pitayaConfig.Modules.BindingStorage.Etcd.User,
+		"pitaya.modules.bindingstorage.etcd.pass":          pitayaConfig.Modules.BindingStorage.Etcd.Pass,
 		"pitaya.conn.ratelimiting.limit":                   pitayaConfig.Conn.RateLimiting.Limit,
 		"pitaya.conn.ratelimiting.interval":                pitayaConfig.Conn.RateLimiting.Interval,
 		"pitaya.conn.ratelimiting.forcedisable":            pitayaConfig.Conn.RateLimiting.ForceDisable,

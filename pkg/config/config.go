@@ -557,6 +557,8 @@ type EtcdGroupServiceConfig struct {
 	Prefix             string        `mapstructure:"prefix"`
 	TransactionTimeout time.Duration `mapstructure:"transactiontimeout"`
 	TLS                *tls.Config   `mapstructure:"tls"`
+	User               string        `mapstructure:"user"`
+	Pass               string        `mapstructure:"pass"`
 }
 
 // newDefaultEtcdGroupServiceConfig provides default ETCD configuration
@@ -597,7 +599,9 @@ type ETCDBindingConfig struct {
 	Endpoints   []string      `mapstructure:"endpoints"`
 	Prefix      string        `mapstructure:"prefix"`
 	LeaseTTL    time.Duration `mapstructure:"leasettl"`
-	TLS         *tls.Config
+	TLS         *tls.Config   `mapstructure:"tls"`
+	User        string        `mapstructure:"user"`
+	Pass        string        `mapstructure:"pass"`
 }
 
 // NewDefaultETCDBindingConfig provides default configuration for ETCDBindingStorage

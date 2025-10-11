@@ -22,19 +22,20 @@ package cluster
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"strings"
-	"sync"
-	"time"
 	"github.com/topfreegames/pitaya/v3/pkg/config"
 	"github.com/topfreegames/pitaya/v3/pkg/constants"
 	"github.com/topfreegames/pitaya/v3/pkg/logger"
 	"github.com/topfreegames/pitaya/v3/pkg/util"
-	clientv3 "go.etcd.io/etcd/client/v3"
 	logutil "go.etcd.io/etcd/client/pkg/v3/logutil"
+	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/namespace"
 	"google.golang.org/grpc"
+	"strings"
+	"sync"
+	"time"
 )
 
 type etcdServiceDiscovery struct {
@@ -51,6 +52,7 @@ type etcdServiceDiscovery struct {
 	etcdUser               string
 	etcdPass               string
 	etcdPrefix             string
+	etcdTls                *tls.Config
 	etcdDialTimeout        time.Duration
 	running                bool
 	server                 *Server
@@ -81,14 +83,14 @@ func NewEtcdServiceDiscovery(
 		client = cli[0]
 	}
 	sd := &etcdServiceDiscovery{
-		running:         false,
-		server:          server,
-		serverMapByType: make(map[string]map[string]*Server),
-		listeners:       make([]SDListener, 0),
-		stopChan:        make(chan bool),
-		stopLeaseChan:   make(chan bool),
-		appDieChan:      appDieChan,
-		cli:             client,
+		running:            false,
+		server:             server,
+		serverMapByType:    make(map[string]map[string]*Server),
+		listeners:          make([]SDListener, 0),
+		stopChan:           make(chan bool),
+		stopLeaseChan:      make(chan bool),
+		appDieChan:         appDieChan,
+		cli:                client,
 		syncServersRunning: make(chan bool),
 	}
 
@@ -103,6 +105,7 @@ func (sd *etcdServiceDiscovery) configure(config config.EtcdServiceDiscoveryConf
 	sd.etcdPass = config.Pass
 	sd.etcdDialTimeout = config.DialTimeout
 	sd.etcdPrefix = config.Prefix
+	sd.etcdTls = config.TLS
 	sd.heartbeatTTL = config.Heartbeat.TTL
 	sd.logHeartbeat = config.Heartbeat.Log
 	sd.syncServersInterval = config.SyncServers.Interval
@@ -300,7 +303,7 @@ func (sd *etcdServiceDiscovery) GetServersByType(serverType string) (map[string]
 		// Create a new map to avoid concurrent read and write access to the
 		// map, this also prevents accidental changes to the list of servers
 		// kept by the service discovery.
-		ret := make(map[string]*Server,len(sd.serverMapByType[serverType]))
+		ret := make(map[string]*Server, len(sd.serverMapByType[serverType]))
 		for k, v := range sd.serverMapByType[serverType] {
 			ret[k] = v
 		}
@@ -353,6 +356,9 @@ func (sd *etcdServiceDiscovery) InitETCDClient() error {
 	if sd.etcdUser != "" && sd.etcdPass != "" {
 		config.Username = sd.etcdUser
 		config.Password = sd.etcdPass
+	}
+	if sd.etcdTls != nil {
+		config.TLS = sd.etcdTls
 	}
 	cli, err = clientv3.New(config)
 	if err != nil {
